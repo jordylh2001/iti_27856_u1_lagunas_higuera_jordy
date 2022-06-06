@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
          *En esta parte se declaran los elementos que van a ser utilizados en el programa
          */
         txv = findViewById(R.id.edittext);
+        txv.setText("");
         b1 = findViewById(R.id.button);
         /*
          * Se crea el metodo Onclick del boton
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                             String paths = uri.getPath();
                             String[] Realpath = paths.split(":");
                             if (extencion(Realpath[1])){
-                                txv.setText(Realpath[1]);
+                                //txv.setText(Realpath[1]);
                                 String Row = "";
                                 //Se crea un arraylist en el cual se van a guardar los datos que se necesitan para verificar que se cumplan con las dimensiones establecidas en el encabezado
                                 ArrayList<String> elementosexaminar = new ArrayList<String>();
@@ -106,7 +107,10 @@ public class MainActivity extends AppCompatActivity {
                                         elementosexaminar.add(text);
                                     }
                                 }
-                                txv.setText(elementosexaminar.toString());
+                                for (int u=0;u<elementosexaminar.size();u++){
+                                    txv.append(elementosexaminar.get(u)+"\n");
+                                }
+                                //txv.setText(elementosexaminar.toString());
                             } else{
                                 txv.setText("");
                             }
