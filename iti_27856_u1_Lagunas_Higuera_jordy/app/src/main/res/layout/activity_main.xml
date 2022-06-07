@@ -20,12 +20,12 @@
 
         <EditText
             android:id="@+id/archivos"
-            android:editable="false"
+            android:enabled="false"
             android:layout_width="match_parent"
             android:layout_height="302dp"
             android:layout_weight="4"
             android:gravity="top"
-            android:inputType="text|textMultiLine" />
+            android:inputType="none" />
 
         <TextView
             android:id="@+id/com"
@@ -36,12 +36,12 @@
 
         <EditText
             android:id="@+id/comentarios"
-            android:editable="false"
             android:layout_width="match_parent"
             android:layout_height="323dp"
             android:layout_weight="4"
             android:gravity="top"
-            android:inputType="text|textMultiLine" />
+            android:inputType="none"
+            android:enabled="false" />
 
         <LinearLayout
             android:layout_width="match_parent"

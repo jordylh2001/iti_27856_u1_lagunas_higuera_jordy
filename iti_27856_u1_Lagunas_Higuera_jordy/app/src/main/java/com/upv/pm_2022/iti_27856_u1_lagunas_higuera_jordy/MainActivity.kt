@@ -1,6 +1,6 @@
 package com.upv.pm_2022.iti_27856_u1_lagunas_higuera_jordy
 
-
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -10,17 +10,14 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
-import java.io.BufferedReader
-import java.io.FileInputStream
-import java.io.IOException
-import java.io.InputStreamReader
+import java.io.*
 
 
 class MainActivity : AppCompatActivity() {
     var edt1: EditText? = null
     var edt2: EditText? = null
-    var b1: Button? = null
-
+    private val filepath = "MyFileStorage"
+    internal var myExternalFile: File?=null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -35,9 +32,8 @@ class MainActivity : AppCompatActivity() {
         b1.setOnClickListener { view ->
             AbrirArchivo(view) //Se llama a la funcion para abrir el explorador de archivos
         }
-
-
     }
+
 
     var sActivityResultLauncher = registerForActivityResult(
         StartActivityForResult()
@@ -46,24 +42,32 @@ class MainActivity : AppCompatActivity() {
             val data = result.data
             val uri = data!!.data
             try {
+
                 //Se abre el archivo utilizando uri
-                val `is` = applicationContext.contentResolver.openInputStream(
-                    uri!!
-                ) as FileInputStream?
-                val isReader = BufferedReader(InputStreamReader(`is`))
-                val paths = uri.path
+                val paths = uri?.path
                 val Realpath = paths!!.split(":".toRegex()).toTypedArray()
+                val inputStream = contentResolver.openInputStream(uri)
+                val lineList = mutableListOf<String>()
+
+
                 if (extencion(Realpath[1])) {
                     edt1?.append(Realpath[1]+"\n")
+
+                    //Displaying data on EditText
                     var Row:String = "";
                     //Se crea un arraylist en el cual se van a guardar los datos que se necesitan para verificar que se cumplan con las dimensiones establecidas en el encabezado
                     val elementosexaminar:ArrayList<String> = ArrayList<String>()
                     var aux1: Int
                     var aux3:Int = 0
                     //ciclo en el cual se agregan al arraylist las lineas que no contengan "P" o que contenga "#"
-                    while ((Row=isReader.readLine()) != null) {/*
+                    inputStream!!.bufferedReader().forEachLine {
+                        //lineList.add(it)
+
+                        var Row:String=""
+                        Row=it
                         aux1 = 0
                         var text = ""
+                        //Toast.makeText(this,Row,Toast.LENGTH_SHORT).show()
                         var r = 0
                         while (r < Row.length) {
                             when (Row[r]) {
@@ -75,26 +79,23 @@ class MainActivity : AppCompatActivity() {
                                     }
                                     r += 2
                                 }
-                                '#' -> aux1 = 1
+                                '#' -> aux1=1
                                 else -> if (aux1 == 1 || aux3 == 3) {
                                     text = text + Row[r]
                                 }
                             }
                             r++
                         }
+
                         if (text !== "") {
-                            elementosexaminar.add(text)
+                            lineList.add(text)
                         }
                     }
-                    for (u in elementosexaminar.indices) {
-                        edt2?.append(
-                            """
-                                                      ${elementosexaminar[u]}
-                                                      
-                                                      """.trimIndent()
-                        )*/
+                    lineList.forEach{
+                        edt2?.append(it+"\n")
                     }
-                    //edt2.setText(elementosexaminar.toString());
+                    Toast.makeText(this,lineList.toString(),Toast.LENGTH_SHORT).show()
+
                 } else {
                     edt2?.setText("")
                 }
@@ -103,6 +104,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+
 
     /*
     * En esta parte se abre el navegador de archivos del dispositivo movil para que el usuario pueda elegir el archivo que requiera analizar
@@ -127,9 +130,9 @@ class MainActivity : AppCompatActivity() {
             extencion_obtenida = pathArchivo.substring(pathArchivo.lastIndexOf(".") + 1)
         }
         if (extencion_obtenida.equals("py", ignoreCase = true)) {
-            acreditado = true
+            acreditado = true/*
             Toast.makeText(applicationContext, "El archivo elegido es valido", Toast.LENGTH_SHORT)
-                .show()
+                .show()*/
         } else {
             Toast.makeText(
                 applicationContext,
